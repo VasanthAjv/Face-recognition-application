@@ -4,9 +4,15 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.face_recognition_applicaton.users.enums.Gender;
+import com.example.face_recognition_applicaton.users.enums.Position;
+import com.example.face_recognition_applicaton.users.enums.Role;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -69,14 +75,18 @@ public class Users {
 	    private String password;
 
 	    @Column(name = "role", nullable = false, length = 50)
-	    private String role;
+	    @Enumerated(EnumType.STRING)
+	    private Role role;
 
 	    @Past(message = "Date of birth must be in the past")
 	    @NotNull(message = "Date of birth is mandatory")
 	    @Column(name = "date_of_birth", nullable = false)
 	    private LocalDate dateOfBirth;
 
-	    @Pattern(regexp = "^\\+[0-9]{10,15}$", message = "Phone number must start with + and be followed by 10-15 digits")
+	    @NotBlank(message = "Country code is required")
+	    @Pattern(regexp = "^\\+[0-9]{1,4}$", message = "Invalid country code")
+	    private String countryCode;
+	    
 	    @NotBlank(message = "Phone number is mandatory")
 	    @Size(max = 20, message = "Phone number cannot exceed 20 characters")
 	    @Column(name = "phone_number", nullable = false, length = 20)
@@ -103,18 +113,21 @@ public class Users {
 
 	    @NotBlank(message = "Position is mandatory")
 	    @Size(max = 100, message = "Position cannot exceed 100 characters")
+	    @Enumerated(EnumType.STRING)
 	    @Column(name = "position", nullable = false, length = 100)
-	    private String position;
+	    private Position position;
 
 	    @NotBlank(message = "Emergency contact name is mandatory")
 	    @Size(max = 100, message = "Emergency contact name cannot exceed 100 characters")
 	    @Column(name = "emergency_contact_name", nullable = false, length = 100)
 	    private String emergencyContactName;
+	    
+	    @Size(max = 5, message = "Country code cannot exceed 5 characters")
+	    @Column(name = "emergency_country_code", length = 5)
+	    private String emergencyCountryCode;
 
-	    @Pattern(regexp = "^\\+[0-9]{10,15}$", message = "Emergency contact number must start with + and be followed by 10-15 digits")
-	    @NotBlank(message = "Emergency contact number is mandatory")
 	    @Size(max = 20, message = "Emergency contact number cannot exceed 20 characters")
-	    @Column(name = "emergency_contact_number", nullable = false, length = 20)
+	    @Column(name = "emergency_contact_number", length = 20)
 	    private String emergencyContactNumber;
 
 	    @NotBlank(message = "Nationality is mandatory")
@@ -124,7 +137,9 @@ public class Users {
 
 	    @NotNull(message = "Gender is mandatory")
 	    @Column(name = "gender", nullable = false, length = 50)
-	    private String gender;
+	    @Enumerated(EnumType.STRING)
+	    private Gender gender;
+	    
 
 	    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	    private List<Attendance> attendance;

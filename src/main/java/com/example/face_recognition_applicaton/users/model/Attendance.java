@@ -39,6 +39,8 @@ public class Attendance {
     
     @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss a EEEE")
     private LocalDateTime clockOutTime;
+    
+    
     private String deviceType;
     private String location;
     private String shiftType;
